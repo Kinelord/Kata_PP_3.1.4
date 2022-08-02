@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <title>Users</title>
+</head>
+
+<body>
+<div th:align="center">
+    <h2>List of register Users</h2>
+
+    <table th:border="1.5" th:cellpadding="5">
+        <tr>
+            <th colspan="3"><a href="/admin/new">Add a user</a></th>
+            <th colspan="3">
+                <form th:method="DELETE" th:action="@{/admin/deleteAll}">
+                    <input type="submit" value="Delete all Users"/>
+                </form>
+            </th>
+
+        </tr>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>E-mail</th>
+            <th>Action</th>
+        </tr>
+        <div th:switch="${users}">
+            <h2 th:case="null">No users found!</h2>
+            <div th:case="*">
+                <tr th:each="user : ${users}">
+                    <td><a th:text="${user.getId()}">Id</a></td>
+                    <td><a th:href="@{/user/{id}(id=${user.getId()})}"
+                           th:text="${user.getUsername()}">Username</a></td>
+                    <td><a th:text="${user.getAge()}">age</a></td>
+                    <td><a th:text="${user.getEmail()}">email</a></td>
+                    <td>
+                        <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Update</a>
+                        <form th:method="delete" th:action="@{/users/{id}(id=${user.getId()})}">
+                            <input type="submit" value="Delete"/>
+                        </form>
+
+                    </td>
+                </tr>
+            </div>
+        </div>
+        <form th:action="@{/logout}" th:method="POST">
+            <input type="submit" value="Logout">
+        </form>
+    </table>
+</div>
+
+</body>
+</html>

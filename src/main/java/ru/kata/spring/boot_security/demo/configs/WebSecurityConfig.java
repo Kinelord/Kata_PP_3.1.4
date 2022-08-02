@@ -1,49 +1,75 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig {
     private final SuccessUserHandler successUserHandler;
-
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    private final UserDetailsService userService;
+    private final AuthenticationConfiguration configuration;
+    @Autowired
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailsService userService, AuthenticationConfiguration configuration) {
         this.successUserHandler = successUserHandler;
+        this.userService = userService;
+        this.configuration = configuration;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http  // Доступ только для не зарегистрированных пользователей
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
+                // Доступ разрешен всем пользователей
+                .antMatchers("/", "/auth/login", "/auth/registration").permitAll()
+                // Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                // Перенаправление на главную страницу после успешного входа в зависимости от роли
+                .formLogin()
+//                .loginPage("/auth/login")
+//                .defaultSuccessUrl("/", true)
+//                .failureUrl("/auth/login?error")
+                .successHandler(successUserHandler)
                 .permitAll()
                 .and()
+                // Выход с авторизации
                 .logout()
+                // Стереть данные сеанса и кукис
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                // Переход по указанному Url
+                .logoutUrl("/logout")
+                // Переход по указанному Url после выхода из сессии
+                .logoutSuccessUrl("/auth/login")
+                // Доступно для всех
                 .permitAll();
+        return http.build();
+    }
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
-    // аутентификация inMemory
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
+    @Autowired
+    void configure(AuthenticationManagerBuilder builder) throws Exception {
+        builder.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+    }
 
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+
+<form th:method="post" th:action="@{/auth/registration}" th:object="${user}">
+    <table th:border="0" th:cellpadding="5">
+        <tr>
+            <td><label for="name"> Enter name</label></td>
+            <td><input type="text" th:field="*{username}" id="name"/></td>
+            <div style="color: darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
+        </tr>
+
+        <tr>
+            <td><label for="age"><b>Age</b></label></td>
+            <td><input type="number" th:field="*{age}" id="age"/></td>
+            <div style="color: darkred" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Name error</div>
+        </tr>
+
+        <tr>
+            <td><label for="email"><b>E-mail</b></label></td>
+            <td><input type="text" th:field="*{email}" id="email"/></td>
+            <div style="color: darkred" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name error</div>
+        </tr>
+
+        <tr>
+            <td><label for="password"><b>Введите пароль</b></label></td>
+            <td><input type="text" th:field="*{password}" id="password"/></td>
+            <div style="color: darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name error</div>
+        </tr>
+
+        <tr>
+            <td><label for="passwordConf"><b>Confirm your password</b></label></td>
+            <td><input type="text" th:field="*{passwordConfirm}" id="passwordConf"/></td>
+            <div style="color: darkred" th:if="${#fields.hasErrors('passwordConfirm')}"
+                 th:errors="*{passwordConfirm}">Name error</div>
+        </tr>
+
+        <tr>
+            <td>
+                <button type="submit" class="registerbtn">Register</button>
+            </td>
+
+        </tr>
+    </table>
+
+</form>
+
+</body>
+</html>
