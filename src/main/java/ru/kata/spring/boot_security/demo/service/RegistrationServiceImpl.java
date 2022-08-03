@@ -28,9 +28,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     public void register(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Set<Role> roles = new HashSet<>();
-        roles.add(repository.findById(1L).get());
-        user.setRoles(roles);
+        if (user.getRoles() == null){
+            Set<Role> roles = new HashSet<>();
+            roles.add(repository.findById(1L).get());
+            user.setRoles(roles);
+        }
         userRepo.save(user);
     }
 

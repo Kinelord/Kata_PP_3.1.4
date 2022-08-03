@@ -1,28 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
 </head>
 <body>
+<div th:align="center">
+    <h2>Login to your page</h2>
 
-<form name="f" method="post" action="/process_login">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <form name="f" method="post" action="/process_url">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-    <label for="name">Введите имя пользователя</label>
-    <input type="text" name="username" id="name"/>
-    <br/>
-    <label for="pass">Введите пароль</label>
-    <input type="text" name="password" id="pass"/>
-    <br/>
-    <input type="submit" th:value="Login"/>
 
-    <div th:if="${param.error}" style="color: red">
-        Неправильное имя или пароль
-    </div>
-    <a href="/auth/registration">Register</a>
+        <table th:border="0" th:cellpadding="5">
+            <tr>
+                <td><label for="name">Введите имя пользователя</label></td>
+                <td><input type="text" name="username" id="name"/></td>
+            </tr>
 
-</form>
+            <tr>
+                <td><label for="pass">Введите пароль</label></label></td>
+                <td><input type="text" name="password" id="pass"/></td>
+            </tr>
 
+            <tr>
+                <td><input style="color: darkorchid" type="submit" th:value="Login"/></label></td>
+                <td><a style="color: green" th:href="@{/auth/registration}">Register</a></td>
+            </tr>
+
+            <tr th:colspan="2">
+                <td><a style="color: darkblue" th:href="@{/}">Go back to the main page</a></td>
+            </tr>
+
+        </table>
+        <div th:if="${param.error}" style="color: red">
+            Неправильное имя или пароль
+        </div>
+    </form>
+</div>
 </body>
 </html>

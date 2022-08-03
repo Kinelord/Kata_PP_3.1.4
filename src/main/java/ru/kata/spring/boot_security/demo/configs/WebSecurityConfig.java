@@ -39,10 +39,10 @@ public class WebSecurityConfig {
                 .and()
                 // Перенаправление на главную страницу после успешного входа в зависимости от роли
                 .formLogin()
-//                .loginPage("/auth/login")
-//                .defaultSuccessUrl("/", true)
-//                .failureUrl("/auth/login?error")
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/process_url")
                 .successHandler(successUserHandler)
+                .failureUrl("/auth/login?error")
                 .permitAll()
                 .and()
                 // Выход с авторизации

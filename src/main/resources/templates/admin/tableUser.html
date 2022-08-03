@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
@@ -32,13 +32,13 @@
             <div th:case="*">
                 <tr th:each="user : ${users}">
                     <td><a th:text="${user.getId()}">Id</a></td>
-                    <td><a th:href="@{/user/{id}(id=${user.getId()})}"
+                    <td><a th:href="@{/admin/user/{id}(id=${user.getId()})}"
                            th:text="${user.getUsername()}">Username</a></td>
                     <td><a th:text="${user.getAge()}">age</a></td>
                     <td><a th:text="${user.getEmail()}">email</a></td>
                     <td>
-                        <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Update</a>
-                        <form th:method="delete" th:action="@{/users/{id}(id=${user.getId()})}">
+                        <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Update</a>
+                        <form th:method="delete" th:action="@{/admin/{id}(id=${user.getId()})}">
                             <input type="submit" value="Delete"/>
                         </form>
 

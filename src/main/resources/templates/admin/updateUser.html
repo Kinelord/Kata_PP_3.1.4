@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
     <title>Update user</title>
@@ -9,7 +9,7 @@
 <div th:align="center">
     <h2>Edit User</h2>
 
-    <form th:method="PATCH" th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+    <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
         <table th:border="0" th:cellpadding="5">
             <tr>
                 <td><label for="name"> Enter name</label></td>
