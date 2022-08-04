@@ -20,6 +20,7 @@ public class WebSecurityConfig {
     private final SuccessUserHandler successUserHandler;
     private final UserDetailsService userService;
     private final AuthenticationConfiguration configuration;
+
     @Autowired
     public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailsService userService, AuthenticationConfiguration configuration) {
         this.successUserHandler = successUserHandler;
@@ -58,6 +59,7 @@ public class WebSecurityConfig {
                 .permitAll();
         return http.build();
     }
+
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
         return configuration.getAuthenticationManager();

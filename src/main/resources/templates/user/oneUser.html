@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
@@ -9,7 +10,14 @@
 <body>
 
 <div th:align="center">
-    <h2>User</h2>
+
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <h2 style="color: plum">Hi Admin, <span sec:authentication="principal.username"></span> </h2>
+    </div>
+    <div sec:authorize="!hasRole('ROLE_ADMIN')">
+        <h2 style="color: indigo">Hi User, <span sec:authentication="principal.username"></span> </h2>
+    </div>
+
 
     <table th:border="1.5" th:cellpadding="5">
 
@@ -18,12 +26,23 @@
             <th>Name</th>
             <th>Age</th>
             <th>E-mail</th>
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <th>Action</th>
+            </div>
         </tr>
         <tr>
             <td><a th:text="${user.getId()}">Id</a></td>
             <td><a th:text="${user.getUsername()}">Username</a></td>
             <td><a th:text="${user.getAge()}">age</a></td>
             <td><a th:text="${user.getEmail()}">email</a></td>
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <td>
+                    <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Update</a>
+                    <form th:method="delete" th:action="@{/admin/{id}(id=${user.getId()})}">
+                        <input type="submit" value="Delete"/>
+                    </form>
+                </td>
+            </div>
         </tr>
     </table>
     <br/>

@@ -34,7 +34,7 @@
 
             <tr>
                 <td><label for="password"><b>Введите пароль</b></label></td>
-                <td><input type="text" th:field="*{password}" id="password"/></td>
+                <td><input type="password" th:field="*{password}" id="password"/></td>
                 <div style="color: darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name
                     error
                 </div>
@@ -42,7 +42,7 @@
 
             <tr>
                 <td><label for="passwordConf"><b>Confirm your password</b></label></td>
-                <td><input type="text" th:field="*{passwordConfirm}" id="passwordConf"/></td>
+                <td><input type="password" th:field="*{passwordConfirm}" id="passwordConf"/></td>
                 <div style="color: darkred" th:if="${#fields.hasErrors('passwordConfirm')}"
                      th:errors="*{passwordConfirm}">Name error
                 </div>
@@ -53,7 +53,6 @@
                     <button style="color: green" type="submit" class="registerbtn">Register</button>
                 </td>
             </tr>
-
 
             <tr th:colspan="2">
                 <td><a style="color: darkblue" th:href="@{/}">Go back to the main page</a></td>

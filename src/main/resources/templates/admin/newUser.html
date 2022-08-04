@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
@@ -16,7 +17,9 @@
             <tr>
                 <td><label for="name"> Enter name</label></td>
                 <td><input type="text" th:field="*{username}" id="name"/></td>
-                <div style="color: darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
+                <div style="color: darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name
+                    error
+                </div>
             </tr>
 
             <tr>
@@ -33,15 +36,18 @@
 
             <tr>
                 <td><label for="password"><b>Введите пароль</b></label></td>
-                <td><input type="text" th:field="*{password}" id="password"/></td>
-                <div style="color: darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name error</div>
+                <td><input type="password" th:field="*{password}" id="password"/></td>
+                <div style="color: darkred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name
+                    error
+                </div>
             </tr>
 
             <tr>
                 <td><label for="passwordConf"><b>Confirm your password</b></label></td>
-                <td><input type="text" th:field="*{passwordConfirm}" id="passwordConf"/></td>
+                <td><input type="password" th:field="*{passwordConfirm}" id="passwordConf"/></td>
                 <div style="color: darkred" th:if="${#fields.hasErrors('passwordConfirm')}"
-                     th:errors="*{passwordConfirm}">Name error</div>
+                     th:errors="*{passwordConfirm}">Name error
+                </div>
             </tr>
 
             <tr>

@@ -9,18 +9,11 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public class UserDetailsImpl implements UserDetails {
-
-    private final User user;
-
-    public UserDetailsImpl(User user) {
-        this.user = user;
-    }
+public record UserDetailsImpl(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Role> roles = user.getRoles();
-        return roles;
+        return user.getRoles();
     }
 
     @Override
@@ -51,10 +44,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
     }
 
 }

@@ -17,6 +17,7 @@ import java.util.Collections;
 public class AuthProviderImpl implements AuthenticationProvider {
 
     private final AdminServiceImpl userDetailsService;
+
     @Autowired
     public AuthProviderImpl(AdminServiceImpl user) {
         this.userDetailsService = user;

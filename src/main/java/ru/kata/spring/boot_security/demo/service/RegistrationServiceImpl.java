@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserRepository userRepo;
@@ -28,7 +30,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     public void register(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        if (user.getRoles() == null){
+        if (user.getRoles() == null) {
             Set<Role> roles = new HashSet<>();
             roles.add(repository.findById(1L).get());
             user.setRoles(roles);

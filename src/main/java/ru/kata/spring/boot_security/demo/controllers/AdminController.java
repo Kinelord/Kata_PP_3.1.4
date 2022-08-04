@@ -41,7 +41,7 @@ public class AdminController {
     public String getUser(@PathVariable("id") Long id, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        if(principal.getUser().getId().equals(id)) {
+        if (principal.user().getId().equals(id)) {
             return "redirect:/user";
         }
         model.addAttribute("user", adminService.getUser(id));
@@ -77,18 +77,21 @@ public class AdminController {
     }
 
     @GetMapping("/{id}/edit")
-    public String updatePerson(@PathVariable("id") Long id, Model model) {
+    public String updateUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", adminService.getUser(id));
+        model.addAttribute("pass", adminService.getUser(id).getPassword());
         return "admin/updateUser";
     }
 
     @PatchMapping("/{id}")
     public String createUpdateUser(@PathVariable("id") Long id,
                                    @ModelAttribute("user") @Valid User user,
-                                   BindingResult bindingResult) {
+                                   BindingResult bindingResult,
+                                   @ModelAttribute("pass") String pass) {
         if (bindingResult.hasErrors()) {
             return "admin/updateUser";
         }
+        user.setPassword(pass);
         adminService.updateUser(id, user);
         return "redirect:/admin";
     }

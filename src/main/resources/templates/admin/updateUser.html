@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="en">
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
     <title>Update user</title>
@@ -11,22 +12,32 @@
 
     <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
         <table th:border="0" th:cellpadding="5">
+            <input type="hidden" name="pass" th:value="${pass}">
+
             <tr>
                 <td><label for="name"> Enter name</label></td>
                 <td><input type="text" th:field="*{username}" id="name"/></td>
-                <td><div style="color: darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div></td>
+                <div style="color: darkred" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name
+                    error
+                </div>
             </tr>
 
             <tr>
                 <td><label for="age"><b>Age</b></label></td>
                 <td><input type="number" th:field="*{age}" id="age"/></td>
-                <td><div style="color: darkred" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age error</div></td>
+                <div style="color: darkred" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age error</div>
+
             </tr>
 
             <tr>
                 <td><label for="email"><b>E-mail</b></label></td>
                 <td><input type="text" th:field="*{email}" id="email"/></td>
                 <div style="color: darkred" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name error</div>
+            </tr>
+
+
+            <tr>
+                <td><input type="hidden" th:field="*{roles}" id="role"/></td>
             </tr>
 
             <tr>
