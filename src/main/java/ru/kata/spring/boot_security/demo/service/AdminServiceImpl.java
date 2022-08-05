@@ -68,6 +68,7 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);

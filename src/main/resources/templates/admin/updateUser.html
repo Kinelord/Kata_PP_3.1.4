@@ -12,7 +12,6 @@
 
     <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
         <table th:border="0" th:cellpadding="5">
-            <input type="hidden" name="pass" th:value="${pass}">
 
             <tr>
                 <td><label for="name"> Enter name</label></td>
@@ -34,7 +33,6 @@
                 <td><input type="text" th:field="*{email}" id="email"/></td>
                 <div style="color: darkred" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name error</div>
             </tr>
-
 
             <tr>
                 <td><input type="hidden" th:field="*{roles}" id="role"/></td>

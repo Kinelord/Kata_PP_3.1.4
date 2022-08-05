@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.kata.spring.boot_security.demo.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,12 +22,14 @@ import javax.validation.Valid;
 public class AdminController {
 
     private final RegistrationService registrationService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AdminService adminService;
     private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(RegistrationService registrationService, AdminService adminService, UserValidator userValidator) {
+    public AdminController(RegistrationService registrationService, BCryptPasswordEncoder bCryptPasswordEncoder, AdminService adminService, UserValidator userValidator) {
         this.registrationService = registrationService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminService = adminService;
         this.userValidator = userValidator;
     }
@@ -86,12 +89,16 @@ public class AdminController {
     @PatchMapping("/{id}")
     public String createUpdateUser(@PathVariable("id") Long id,
                                    @ModelAttribute("user") @Valid User user,
-                                   BindingResult bindingResult,
-                                   @ModelAttribute("pass") String pass) {
+                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/updateUser";
         }
-        user.setPassword(pass);
+
+        if(user.getPassword() == null){
+            user.setPassword(adminService.getUser(user.getId()).getPassword());
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
         adminService.updateUser(id, user);
         return "redirect:/admin";
     }
