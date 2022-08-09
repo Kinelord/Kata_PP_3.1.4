@@ -27,11 +27,9 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
-        Optional<User> user1 = registrationService.checkUserName(user.getUsername());
+        Optional<User> user1 = registrationService.checkUserName(user.getEmail());
         if (!user1.isEmpty()) {
-            errors.rejectValue("username", "", "A user with this name already exists");
-        } else if (!user.getPassword().equals(user.getPasswordConfirm())) {
-            errors.rejectValue("password", "", "Passwords don't match");
+            errors.rejectValue("email", "", "A user with this E-mail already exists");
         }
     }
 }

@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,7 @@ public class AdminServiceImpl implements AdminService {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -38,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
         return userRepository.findById(id).get();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public User getMyUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,19 +47,19 @@ public class AdminServiceImpl implements AdminService {
         return principal.user();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void updateUser(Long id, User user) {
         userRepository.save(user);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteAllUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,8 +71,8 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User Not Found");
         }

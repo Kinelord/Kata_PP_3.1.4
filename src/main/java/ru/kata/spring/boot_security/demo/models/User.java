@@ -21,21 +21,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
-    private String username;
+    private String firstName;
 
-    @Size(min = 6, message = "The password must be at least 6 characters")
+    private String lastName;
+
     private String password;
 
-    @Transient
-    private String passwordConfirm;
-
-    @Min(value = 0, message = "The age must be greater than 0")
-    @Max(value = 120, message = "The age must be less than 0")
     private int age;
 
-    @NotEmpty(message = "E-mail should not be empty")
-    @Email
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -43,8 +36,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public User(String username, String password, int age, String email) {
-        this.username = username;
+    public User(String firstName, String lastName, String password, int age, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
         this.age = age;
         this.email = email;

@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,31 +33,21 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http  // Доступ только для не зарегистрированных пользователей
+        http
                 .authorizeRequests()
-                // Доступ разрешен всем пользователей
-                .antMatchers("/", "/auth/login", "/auth/registration").permitAll()
-                // Все остальные страницы требуют аутентификации
+                .antMatchers("/", "/index", "/auth/registration").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                // Перенаправление на главную страницу после успешного входа в зависимости от роли
                 .formLogin()
-                .loginPage("/auth/login")
-                .loginProcessingUrl("/process_url")
                 .successHandler(successUserHandler)
-                .failureUrl("/auth/login?error")
                 .permitAll()
                 .and()
                 // Выход с авторизации
                 .logout()
-                // Стереть данные сеанса и кукис
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                // Переход по указанному Url
                 .logoutUrl("/logout")
-                // Переход по указанному Url после выхода из сессии
-                .logoutSuccessUrl("/auth/login")
-                // Доступно для всех
+                .logoutSuccessUrl("/")
                 .permitAll();
         return http.build();
     }
@@ -74,4 +66,5 @@ public class WebSecurityConfig {
     public BCryptPasswordEncoder getBCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

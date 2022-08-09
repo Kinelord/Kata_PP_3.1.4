@@ -18,28 +18,21 @@ import java.util.Set;
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserRepository userRepo;
-    private final RoleRepository repository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public RegistrationServiceImpl(UserRepository userRepo, RoleRepository repository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepo = userRepo;
-        this.repository = repository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public void register(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        if (user.getRoles() == null) {
-            Set<Role> roles = new HashSet<>();
-            roles.add(repository.findById(1L).get());
-            user.setRoles(roles);
-        }
         userRepo.save(user);
     }
 
-    public Optional<User> checkUserName(String name) {
-        return userRepo.findByUsername(name);
+    public Optional<User> checkUserName(String email) {
+        return userRepo.findByEmail(email);
     }
 
 }
