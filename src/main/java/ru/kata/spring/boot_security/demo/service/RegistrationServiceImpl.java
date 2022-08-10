@@ -21,7 +21,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public RegistrationServiceImpl(UserRepository userRepo, RoleRepository repository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public RegistrationServiceImpl(UserRepository userRepo, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepo = userRepo;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }

@@ -28,7 +28,6 @@ public class AdminServiceImpl implements AdminService {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -39,34 +38,14 @@ public class AdminServiceImpl implements AdminService {
         return userRepository.findById(id).get();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @Override
-    public User getMyUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        return principal.user();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void updateUser(Long id, User user) {
         userRepository.save(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @Override
-    public void deleteAllUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        User user = principal.user();
-        userRepository.deleteAll();
-        userRepository.save(user);
     }
 
 

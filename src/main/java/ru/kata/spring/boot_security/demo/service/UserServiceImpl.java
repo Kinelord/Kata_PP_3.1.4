@@ -12,7 +12,6 @@ import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @Override
     public User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

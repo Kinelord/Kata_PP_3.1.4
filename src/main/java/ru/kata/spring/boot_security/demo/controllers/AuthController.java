@@ -15,27 +15,21 @@ import ru.kata.spring.boot_security.demo.util.UserValidator;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/")
 public class AuthController {
 
     private final RegistrationService registrationService;
-    private final UserValidator userValidator;
 
     @Autowired
     public AuthController(RegistrationService registrationService, UserValidator userValidator) {
         this.registrationService = registrationService;
-        this.userValidator = userValidator;
     }
 
-    @GetMapping("/login")
+    @GetMapping
     public String loginPage() {
-        return "auth/login";
+        return "redirect:/login";
     }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("user") User user) {
-        return "auth/registration";
-    }
 
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("user") User user) {

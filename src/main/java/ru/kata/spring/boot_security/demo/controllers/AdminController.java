@@ -41,20 +41,9 @@ public class AdminController {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("admin", userDetails.user());
         model.addAttribute("newuser", new User());
-        return "admin/tableUser";
+        return "admin/AdminPage";
     }
 
-    @GetMapping("/user")
-    public String getMyUser(Model model) {
-        model.addAttribute("user", adminService.getMyUser());
-        return "user/oneUser";
-    }
-
-    @GetMapping("/new")
-    public String newPerson(Model model) {
-        model.addAttribute("newuser", new User());
-        return "admin/newUser";
-    }
 
     @PostMapping("/create")
     public String add(@ModelAttribute("newuser") User user,
@@ -67,12 +56,6 @@ public class AdminController {
 
         registrationService.register(user);
         return "redirect:/admin";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String updateUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", adminService.getUser(id));
-        return "admin/updateUser";
     }
 
     @PatchMapping("/{id}")
@@ -89,7 +72,7 @@ public class AdminController {
             user.setRoles(adminService.getUser(user.getId()).getRoles());
         }
 
-        if (user.getPassword() == null) {
+        if (user.getPassword().equals("")) {
             user.setPassword(adminService.getUser(user.getId()).getPassword());
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -104,9 +87,4 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/deleteAll")
-    public String deleteAllUser() {
-        adminService.deleteAllUser();
-        return "redirect:/admin";
-    }
 }

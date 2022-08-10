@@ -35,7 +35,9 @@ public class WebSecurityConfig {
 
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/auth/registration").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

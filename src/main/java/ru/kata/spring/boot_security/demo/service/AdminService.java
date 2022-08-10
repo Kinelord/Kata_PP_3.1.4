@@ -11,12 +11,9 @@ public interface AdminService extends UserDetailsService {
 
     User getUser(Long id);
 
-    User getMyUser();
-
     void updateUser(Long id, User user);
 
     void deleteUser(Long id);
 
-    void deleteAllUser();
 
 }
