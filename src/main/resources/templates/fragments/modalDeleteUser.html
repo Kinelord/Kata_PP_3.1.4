@@ -1,0 +1,83 @@
+<div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+
+        <!-- Title modal window + close-->
+        <div class="modal-header">
+            <p class="modal-title" id="modalBasicLabelDelete">Delete user</p>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+        <!-- Form delete user-->
+        <div class="modal-body">
+            <form id="adminFormDelete">
+
+                <div>
+                    <label for="idDelete"><b>ID</b></label>
+                    <input type="text" class="form-control" id="idDelete"
+                           name="id" disabled><br>
+                </div>
+
+                <div>
+                    <label for="firstNameDelete">
+                        <b>First name</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="firstNameDelete" name="firstName"
+                           disabled>
+                    <br>
+                </div>
+
+                <div>
+                    <label for="lastNameDelete">
+                        <b>Last name</b>
+                    </label>
+                    <input type="text"
+                           class="form-control" id="lastNameDelete" name="lastName"
+                           disabled>
+                    <br>
+                </div>
+
+                <div>
+                    <label for="ageDelete">
+                        <b>Age</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="ageDelete" name="age" disabled><br>
+                </div>
+
+                <div>
+                    <label for="emailDelete">
+                        <b>E-mail</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="emailDelete" name="email" disabled><br>
+                </div>
+
+                <div>
+                    <label for="passwordDelete">
+                        <b>Password</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="passwordDelete" name="password" disabled><br>
+                </div>
+
+                <select multiple class="form-control" id="roleDelete" name="role" disabled>
+                    <option>ADMIN</option>
+                    <option>USER</option>
+                </select>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Close
+                    </button>
+                    <button form="adminFormDelete" type="submit"
+                            class="btn btn-danger">Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,90 +1,98 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
-import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 import ru.kata.spring.boot_security.demo.service.AdminService;
 import ru.kata.spring.boot_security.demo.service.RegistrationService;
-import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Controller
-@RequestMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
+@RequestMapping(value = "/admin")
 public class AdminController {
 
-    private final RegistrationService registrationService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final AdminService adminService;
     private final RoleRepository roleRepository;
+    private final RegistrationService registrationService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AdminController(RegistrationService registrationService, BCryptPasswordEncoder bCryptPasswordEncoder, AdminService adminService, UserValidator userValidator, RoleRepository roleRepository) {
-        this.registrationService = registrationService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public AdminController(AdminService adminService, RoleRepository roleRepository, RegistrationService registrationService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.adminService = adminService;
         this.roleRepository = roleRepository;
+        this.registrationService = registrationService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping
-    public String adminPage(Model model) {
-        model.addAttribute("users", adminService.getUsers());
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("admin", userDetails.user());
-        model.addAttribute("newuser", new User());
+    public String adminPage() {
         return "admin/AdminPage";
     }
 
+    @ResponseBody
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(adminService.getUser(id), HttpStatus.OK);
+    }
 
-    @PostMapping("/create")
-    public String add(@ModelAttribute("newuser") User user,
-                      @RequestParam(name = "role", required = false) String[] roles) {
+    @ResponseBody
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> findAll() {
+        return new ResponseEntity<>(adminService.getUsers(), HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/create")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> add(@RequestBody User user) {
         Set<Role> rolesSet = new HashSet<>();
-        for (String role : roles) {
-            rolesSet.add(roleRepository.findByName(role).get());
+        for (Role role : user.getRoles()) {
+            rolesSet.add(roleRepository.findByName(role.getName()).get());
         }
         user.setRoles(rolesSet);
 
         registrationService.register(user);
-        return "redirect:/admin";
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public String createUpdateUser(@PathVariable("id") Long id,
-                                   @ModelAttribute("user") User user,
-                                   @RequestParam(name = "role", required = false) String[] roles) {
-        if (roles != null) {
-            Set<Role> rolesSet = new HashSet<>();
-            for (String role : roles) {
-                rolesSet.add(roleRepository.findByName(role).get());
-            }
-            user.setRoles(rolesSet);
-        } else {
-            user.setRoles(adminService.getUser(user.getId()).getRoles());
+    @PatchMapping(value = "/{id}")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> updateUser(@PathVariable("id") Long id,
+                                                 @RequestBody User user) {
+        User userDb = null;
+        if(user.getRoles().size() == 0 || user.getPassword().equals("")) {
+            userDb = adminService.getUser(id);
+        }
+        if (user.getRoles().size() == 0) {
+            user.setRoles(userDb.getRoles());
         }
 
+
         if (user.getPassword().equals("")) {
-            user.setPassword(adminService.getUser(user.getId()).getPassword());
+            user.setPassword(userDb.getPassword());
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         adminService.updateUser(id, user);
-        return "redirect:/admin";
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
+    @ResponseBody
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
         adminService.deleteUser(id);
-        return "redirect:/admin";
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
 
 }

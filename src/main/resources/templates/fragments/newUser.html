@@ -1,0 +1,49 @@
+<!-- Рамка с названием -->
+<div th:fragment="newUser">
+    <div class="card ">
+        <div class="card-header">
+            <div><h4><b>Add new users</b></h4></div>
+        </div>
+        <div class="card-body">
+            <div class="row justify-content-sm-center text-center">
+                <div class="col-2 col-sm-3 themed-grid-col">
+                    <form id="formAddUser">
+
+                        <label for="firstNameAdd"><b>First name</b></label>
+                        <input class="form-control alert alert-warning " type="text"
+                               id="firstNameAdd"
+                               placeholder="Enter your firstname"/>
+
+                        <label for="lastNameAdd"><b>Last name</b></label>
+                        <input class="form-control alert alert-warning" type="text"
+                               id="lastNameAdd"
+                               placeholder="Enter your lastName"/>
+
+                        <label for="ageAdd"><b><b>Age</b></b></label>
+                        <input class="form-control" type="number" id="ageAdd"
+                               placeholder="Enter your age"/>
+                        <br/>
+                        <label for="emailAdd"><b>Email</b></label>
+                        <input class="form-control alert alert-warning" type="text"
+                               id="emailAdd"
+                               placeholder="Enter your email"/>
+
+                        <label for="passwordAdd"><b>Password</b></label>
+                        <input class="form-control" type="text" id="passwordAdd"
+                               placeholder="Enter your password"/>
+
+                        <label for="roleSelectAdd">Role</label>
+                        <select multiple class="form-control" id="roleSelectAdd" name="role">
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="USER">USER</option>
+                        </select>
+
+                        <br/>
+                        <input onclick="formAddNew" class="btn btn-lg btn-success" type="submit"
+                               value="Add new user"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

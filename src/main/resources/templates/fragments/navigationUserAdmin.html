@@ -1,0 +1,49 @@
+<!-- Размер окна -->
+<div th:fragment="navigationUserAdmin">
+
+    <!-- Левая навигация между админом и юзером -->
+    <div class="d-flex align-items-start">
+
+        <!-- Размер окна -->
+        <div class="col-md-2 d-none d-md-block">
+            <!-- Определение количества кнопок и их свойства -->
+            <div class="nav flex-column nav-pills me-3" id="admin-page"
+                 aria-orientation="vertical">
+                <!-- Кнопка админа -->
+                <a class="nav-link active" id="admin-page-button" data-bs-toggle="pill"
+                   data-bs-target="#admin" type="button" role="tab" aria-controls="admin"
+                   aria-selected="true">
+                    Admin
+                </a>
+
+                <!-- Кнопка юзера -->
+                <a class="nav-link" id="user-page-button" data-bs-toggle="pill"
+                   data-bs-target="#user" type="button" role="tab" aria-controls="user"
+                   aria-selected="false">
+                    User
+                </a>
+            </div>
+        </div>
+
+        <!-- Блок описывающий содержимое вкладок навигации -->
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 bg-light">
+            <div class="tab-content" id="navbar-role">
+                <!-- Блок описывающий содержимое страницы админа -->
+
+                <div class="tab-pane fade show active" id="admin" role="tabpanel"
+                     aria-labelledby="admin-page-button">
+
+                    <h1>Admin panel</h1>
+                    <div th:replace="fragments/panel"/>
+                </div>
+
+                <!-- Блок описывающий содержимое страницы юзера -->
+                <div class="tab-pane fade" id="user" role="tabpanel" aria-labelledby="user-page">
+
+                    <h1>User information-page</h1>
+                    <div th:replace="fragments/userPanel"/>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+
+        <!-- Title modal window + close-->
+        <div class="modal-header">
+            <p class="modal-title" id="modalBasicLabelUpdate">Edit user</p>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+        <!-- Form update user-->
+        <div class="modal-body">
+            <form id="adminFormEdit">
+                <div>
+                    <label for="idEdit">
+                        <b>ID</b>
+                    </label>
+                    <input type="text" class="form-control" id="idEdit"
+                           name="id" disabled><br>
+                </div>
+                <div>
+                    <label for="firstNameEdit">
+                        <b>First name</b>
+                    </label>
+                    <input type="text" class="form-control" id="firstNameEdit"
+                           name="firstName">
+                    <br>
+                </div>
+
+                <div>
+                    <label for="lastNameEdit">
+                        <b>Last name</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="lastNameEdit" name="lastName">
+                    <br>
+                </div>
+
+                <div>
+                    <label for="ageEdit">
+                        <b>Age</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="ageEdit" name="age"><br>
+                </div>
+
+                <div>
+                    <label for="emailEdit">
+                        <b>E-mail</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="emailEdit" name="email"><br>
+                </div>
+
+                <div>
+                    <label for="passwordEdit">
+                        <b>Password</b>
+                    </label>
+                    <input type="text" class="form-control"
+                           id="passwordEdit" name="password"><br>
+                </div>
+
+                <select multiple class="form-control" id="roleEdit" name="role">
+                    <option>ADMIN</option>
+                    <option>USER</option>
+                </select>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Close
+                    </button>
+                    <button form="adminFormEdit" type="submit" class="btn btn-primary">Edit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

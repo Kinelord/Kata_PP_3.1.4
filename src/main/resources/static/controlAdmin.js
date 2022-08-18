@@ -1,0 +1,425 @@
+alert("Control Admin")
+const userAddFormId = $('#formAddUser');
+const usersTableId = $('#adminTableBody');
+const userFormId = $('#user-profile');
+
+// Нажатие - вызывает цепочку функций по отображению вкладки "Таблица пользователей" : fragment="panel"
+$('#nav-tableUsers-tab').click(() => {
+    loadUsersTable();
+});
+// Нажатие - вызывает цепочку функций по отображению вкладки "Добавить нового пользователя"  : fragment="panel"
+$('#nav-newUser-tab').click(() => {
+    loadAddForm();
+});
+
+// грузим блок навигации Админа - таблица пользователей
+function loadUsersTable() {
+// Добавляем аттрибут к кнопке "таблица" и содержимое таблицы - Активный
+    $('#nav-table-tab').addClass('active');
+    $('#nav-usersTable').addClass('show').addClass('active');
+// Удаляем аттрибут Активный у кнопки "Новый пользователь" и отключаем содержимое
+    $('#nav-newUser-tab').removeClass('active');
+    $('#nav-newUser').removeClass('show').removeClass('active');
+// Грузим содержимое таблицы
+    getAllUsers();
+}
+
+
+fetch("http://localhost:8080/admin/all")
+    .then(response => response.json())
+    .then(users => {
+        usersTableId.empty();
+        users.forEach(user => _appendUserRow(user))
+    });
+// Браузер сразу же начинает запрос и возвращает промис,
+// который внешний код использует для получения результата.
+// .then(function (response) {
+// Проверка на успешность запроса
+// if (response.ok) {
+//     // .json() анализирует ответ и возвращает новый промис
+//     // метод возвращает обязательство при благоприятном исходе вернуть объект, который получен после JSON.parse(текст тела ответа).
+//     response.json()
+//         // Передаем в функцию наш промис
+//         .then(users => {
+//         // Очищаем содержимое таблицы
+//         usersTableId.empty();
+//         // Заполняем таблицу, передавая в метод _appendUserRow пользователя
+//         users.forEach(user => {
+//             _appendUserRow(user);
+//         });
+//     });
+//     // В случае ошибки передаем в консоль сообщение с ошибкой
+// } else {
+//     console.error('Network request for users.json failed with response ' + response.status + ': ' + response.statusText);
+// }
+//     });
+
+// Функция загрузки содержимого таблицы
+// async function getAllUsers() {
+// // Отправляем запрос на адрес "/admin/all", не добавляя к запросу опций, по факту обычный метод GET
+//     const respons = await fetch('http://localhost:8080/admin/all');
+//         // .then(response=>response.json())
+//         // .then(users=> {
+//         //     usersTableId.empty();
+//         //     users.forEach(user => _appendUserRow(user))
+//         // });
+//         // Браузер сразу же начинает запрос и возвращает промис,
+//         // который внешний код использует для получения результата.
+//         let data = await respons.then(function (response) {
+//             // Проверка на успешность запроса
+//         if (response.ok) {
+//             // .json() анализирует ответ и возвращает новый промис
+//             // метод возвращает обязательство при благоприятном исходе вернуть объект, который получен после JSON.parse(текст тела ответа).
+//             response.json()
+//                 // Передаем в функцию наш промис
+//                 .then(users => {
+//                 // Очищаем содержимое таблицы
+//                 usersTableId.empty();
+//                 // Заполняем таблицу, передавая в метод _appendUserRow пользователя
+//                 users.forEach(user => {
+//                     _appendUserRow(user);
+//                 });
+//             });
+//             // В случае ошибки передаем в консоль сообщение с ошибкой
+//         } else {
+//             console.error('Network request for users.json failed with response ' + response.status + ': ' + response.statusText);
+//         }
+//     });
+//         return data;
+// }
+// Функция, заполнение содержимого таблицы
+function _appendUserRow(user) {
+    usersTableId
+        // Добавляем содержимое строк таблицы
+        .append($('<tr class="border-top bg-light">').attr('id', 'userRow[' + user.id + ']')
+            // Добавляем id
+            .append($('<td>').attr('id', 'userData[' + user.id + '][id]').text(user.id))
+            // Добавляем firstName
+            .append($('<td>').attr('id', 'userData[' + user.id + '][firstName]').text(user.firstName))
+            // Добавляем lastName
+            .append($('<td>').attr('id', 'userData[' + user.id + '][lastName]').text(user.lastName))
+            // Добавляем age
+            .append($('<td>').attr('id', 'userData[' + user.id + '][age]').text(user.age))
+            // Добавляем email
+            .append($('<td>').attr('id', 'userData[' + user.id + '][email]').text(user.email))
+            // Добавляем roles
+            .append($('<td>').attr('id', 'userData[' + user.id + '][roles]').text(user.roles.map(role => role.name)))
+            // Добавляем button Edit
+            .append($('<td>').append($('<button type="button" class="editBut btn btn-primary btn-lg" ' +
+                'data-toggle="modal" data-target="#adminEditModal">')
+                // При нажатии кнопки грузим Модальное окно по редактированию пользователя
+                .click(() => {
+                    loadUserAndShowModalForm(user.id);
+                }).text('Edit')))
+            // Добавляем button Delete
+            .append($('<td>').append($('<button type="button" class="delBut btn btn-danger btn-lg" ' +
+                'data-toggle="modal" data-target="#adminDeleteModal">')
+                // При нажатии кнопки грузим Модальное окно по удалению пользователя
+                .click(() => {
+                    loadUserAndShowModalForm(user.id, false);
+                }).text('Delete')))
+        );
+}
+
+// Модальное окно по редактированию пользователя
+function loadUserAndShowModalForm(id, editMode = true) {
+// Вызываем функцию по настройке
+    _eraseUserModalForm();
+
+    // Отправляем запрос на сервер, для получения полей пользователя выбранного на редактирование
+    fetch('/admin/' + id, {method: 'GET'})
+        .then(function (response) {
+                // Полученный ответ анализируем на корректность
+                if (response.status !== 200) {
+                    console.error('Looks like there was a problem. Status Code: ' + response.status);
+                    if (response.status === 400) {
+                        response.text().then((value) => console.warn("Error message: " + value));
+                    }
+                    return;
+                }
+                // Анализируем ответ и передаем его в функцию
+                response.json().then(function (user) {
+                    // find возвращает из userFormId поле с id = "id" и устанавливает в него значение val(id)
+                    userFormId.find('#id').val(id);
+                    // find возвращает из userFormId поле с id = "firstName" и устанавливает в него значение val(user.firstName)
+                    userFormId.find('#firstName').val(user.firstName);
+                    // find возвращает из userFormId поле с id = "lastName" и устанавливает в него значение val(user.lastName)
+                    userFormId.find('#lastName').val(user.lastName);
+                    // find возвращает из userFormId поле с id = "age" и устанавливает в него значение val(user.age)
+                    userFormId.find('#age').val(user.age);
+                    // find возвращает из userFormId поле с id = "email" и устанавливает в него значение val(user.email)
+                    userFormId.find('#email').val(user.email);
+                    // find возвращает из userFormId поле с id = "password" и устанавливает в него значение val('')
+                    userFormId.find('#password').val('');
+                    userFormId.find('#roles').empty();
+                    response.json().then(roleList => {
+                        roleList.forEach(role => {
+                            userFormId.find('#roles')
+                                .append($('<option>')
+                                    .prop('selected', user.roles.filter(e => e.id === role.id).length)
+                                    .val(role.id).text(role.name));
+                        });
+
+                        // Проверка, если в метод был передан true, то метод ведет себя под Edit
+                        if (editMode) {
+                            // find возвращает из userFormId поле с class = "modal-title" и устанавливает в него значение val('Edit user')
+                            userFormId.find('.modal-title').text('Edit user');
+                            // find возвращает из userFormId поле с id = "password-div" и show() отображает скрытое значение
+                            userFormId.find('#password-div').show();
+                            // find возвращает из userFormId поле с class = "submit" и корректирует его под Edit
+                            userFormId.find('.submit').text('Edit').removeClass('btn-danger')
+                                .addClass('btn-primary')
+                                .removeAttr('onClick')
+                                .attr('onClick', 'updateUser(' + id + ');');
+                            _setReadonlyAttr(false);
+
+                            // Иначе, в метод был передан false, метод ведет себя под Delete
+                        } else {
+                            // find возвращает из userFormId поле с class = "modal-title" и устанавливает в него значение val('Delete user')
+                            userFormId.find('.modal-title').text('Delete user');
+                            // find возвращает из userFormId поле с id = "password-div" и hide() скрывает значение поля
+                            userFormId.find('#password-div').hide();
+                            // find возвращает из userFormId поле с class = "submit" и корректирует его под Delete
+                            userFormId.find('.submit').text('Delete').removeClass('btn-primary').addClass('btn-danger')
+                                .removeAttr('onClick')
+                                .attr('onClick', 'deleteUser(' + id + ');');
+                            _setReadonlyAttr();
+                        }
+
+                        // Отправляем запрос на сервер, для получения Ролей
+                        // fetch('/admin/roles').then(function (response) {
+                        //     if (response.ok) {
+                        //         userFormId.find('#roles').empty();
+                        //         response.json().then(roleList => {
+                        //             roleList.forEach(role => {
+                        //                 userFormId.find('#roles')
+                        //                     .append($('<option>')
+                        //                         .prop('selected', user.roles.filter(e => e.id === role.id).length)
+                        //                         .val(role.id).text(role.name));
+                        //             });
+                        //         });
+                        //     } else {
+                        //         console.error('Network request for roles.json failed with response ' + response.status + ': ' + response.statusText);
+                        //     }
+                    });
+
+                    // вызов метода из Bootstrap
+                    userFormId.modal();
+                });
+            }
+        )
+        .catch(function (err) {
+            console.error('Fetch Error :-S', err);
+        });
+}
+
+function _eraseUserModalForm() {
+    userFormId.find('.invalid-feedback').remove();
+    userFormId.find('#firstName').removeClass('is-invalid');
+    userFormId.find('#email').removeClass('is-invalid');
+    userFormId.find('#password').removeClass('is-invalid');
+    userFormId.find('#age').removeClass('is-invalid');
+}
+
+
+function _setReadonlyAttr(value = true) {
+    userFormId.find('#firstName').prop('readonly', value);
+    userFormId.find('#lastName').prop('readonly', value);
+    userFormId.find('#age').prop('readonly', value);
+    userFormId.find('#email').prop('readonly', value);
+    userFormId.find('#password').prop('readonly', value);
+    userFormId.find('#roles').prop('disabled', value);
+}
+
+// грузим блок навигации Админа - Добавить нового пользователя
+function loadAddForm() {
+// Добавляем аттрибут к кнопке "Новый пользователь" и содержимое формы - Активный
+    $('#nav-newUser-tab').addClass('active');
+    $('#nav-newUser').addClass('show').addClass('active');
+// Удаляем аттрибут Активный у кнопки "таблица" и отключаем содержимое
+    $('#nav-table-tab').removeClass('active');
+    $('#nav-admin').removeClass('show').removeClass('active');
+// Грузим содержимое формы
+    loadUserForInsertForm();
+}
+
+function loadUserForInsertForm() {
+    _eraseUserAddForm();
+    userAddFormId.find('#newfirstName').val('');
+    userAddFormId.find('#newlastName').val('');
+    userAddFormId.find('#newage').val('0');
+    userAddFormId.find('#newemail').val('');
+    userAddFormId.find('#newpassword').val('');
+
+    fetch('/api/roles').then(function (response) {
+        if (response.ok) {
+            userAddFormId.find('#newroles').empty();
+            response.json().then(roleList => {
+                roleList.forEach(role => {
+                    userAddFormId.find('#newroles')
+                        .append($('<option>').val(role.id).text(role.name));
+                });
+            });
+        } else {
+            console.error('Network request for roles.json failed with response ' + response.status + ': ' + response.statusText);
+        }
+    });
+}
+
+userAddFormId.find(':submit').click(() => {
+    insertUser();
+});
+
+function insertUser() {
+    _eraseUserAddForm();
+
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json; charset=utf-8');
+    let user = {
+        'firstName': userAddFormId.find('#firstNameAdd').val(),
+        'lastName': userAddFormId.find('#lastNameAdd').val(),
+        'age': userAddFormId.find('#ageAdd').val(),
+        'email': userAddFormId.find('#emailAdd').val(),
+        'password': userAddFormId.find('#passwordAdd').val(),
+        'roles': userAddFormId.find('#roleSelectAdd').val().map(roleId => parseInt(roleId))
+    };
+    let request = new Request('admin/create/', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(user)
+    });
+
+    fetch(request)
+        .then(function (response) {
+            response.json().then(function (userData) {
+                console.log(userData);
+
+                if (response.status === 409) {
+                    userData.fieldErrors.forEach(error => {
+                        userAddFormId.find('#new' + error.field)
+                            .addClass('is-invalid')
+                            .parent().append($('<div class="invalid-feedback">').text(error.defaultMessage));
+                    });
+                    console.warn('Error: ' + userData.message);
+                    return false;
+                }
+                if (response.status === 400) {
+                    userAddFormId.find('#newemail')
+                        .addClass('is-invalid')
+                        .parent().append($('<div class="invalid-feedback">').text('E-mail must be unique'));
+                    console.warn("Error message: " + userData.message);
+                    return false;
+                }
+
+                loadUsersTable();
+                console.info("User with id = " + userData.id + " was inserted");
+            });
+        });
+}
+
+function initNavigation() {
+    $('#admin-area-tab').click(() => {
+        $('#admin-area-tab').addClass('active').removeClass('btn-light').addClass('btn-primary').prop('aria-selected', true);
+        $('#admin-area').addClass('active');
+        $('#user-area-tab').removeClass('active').removeClass('btn-primary').addClass('btn-light').prop('aria-selected', false);
+        $('#user-area').removeClass('active');
+    });
+    $('#user-area-tab').click(() => {
+        $('#user-area-tab').addClass('active').removeClass('btn-light').addClass('btn-primary').prop('aria-selected', true);
+        $('#user-area').addClass('active');
+        $('#admin-area-tab').removeClass('active').removeClass('btn-primary').addClass('btn-light').prop('aria-selected', false);
+        $('#admin-area').removeClass('active');
+    });
+}
+
+function updateUser(id) {
+    _eraseUserModalForm();
+
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json; charset=utf-8');
+    let user = {
+        'id': parseInt(userFormId.find('#id').val()),
+        'firstName': userFormId.find('#firstName').val(),
+        'lastName': userFormId.find('#lastName').val(),
+        'age': userFormId.find('#age').val(),
+        'email': userFormId.find('#email').val(),
+        'password': userFormId.find('#password').val(),
+        'roles': userFormId.find('#roles').val().map(roleId => parseInt(roleId))
+    };
+    let request = new Request('/api/users/', {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify(user)
+    });
+
+    fetch(request)
+        .then(function (response) {
+            if (response.status === 404) {
+                response.text().then((value) => console.warn("Error message: " + value));
+                userFormId.modal('hide');
+                return false;
+            }
+
+            response.json().then(function (userData) {
+                console.log(userData);
+
+                if (response.status === 409) {
+                    userData.fieldErrors.forEach(error => {
+                        userFormId.find('#' + error.field)
+                            .addClass('is-invalid')
+                            .parent().append($('<div class="invalid-feedback">').text(error.defaultMessage));
+                    });
+                    console.warn('Error: ' + userData.message);
+                    return false;
+                }
+                if (response.status === 400) {
+                    userFormId.find('#email')
+                        .addClass('is-invalid')
+                        .parent().append($('<div class="invalid-feedback">').text('E-mail must be unique'));
+                    console.warn("Error message: " + userData.message);
+                    return false;
+                }
+
+                $('#userData\\[' + userData.id + '\\]\\[firstName\\]').text(userData.firstName)
+                $('#userData\\[' + userData.id + '\\]\\[lastName\\]').text(userData.lastName)
+                $('#userData\\[' + userData.id + '\\]\\[age\\]').text(userData.age)
+                $('#userData\\[' + userData.id + '\\]\\[email\\]').text(userData.email)
+                $('#userData\\[' + userData.id + '\\]\\[roles\\]').text(userData.roles.map(role => role.name));
+                userFormId.modal('hide');
+
+                console.info("User with id = " + id + " was updated");
+            });
+        })
+        .catch(function (err) {
+            console.error('Fetch Error :-S', err);
+        });
+}
+
+function _eraseUserAddForm() {
+    userAddFormId.find('.invalid-feedback').remove();
+    userAddFormId.find('#newfirstName').removeClass('is-invalid');
+    userAddFormId.find('#newage').removeClass('is-invalid');
+    userAddFormId.find('#newemail').removeClass('is-invalid');
+    userAddFormId.find('#newpassword').removeClass('is-invalid');
+}
+
+function deleteUser(id) {
+    fetch('/api/users/' + id, {method: 'DELETE'})
+        .then(function (response) {
+            userFormId.modal('hide');
+            if (response.status === 404 || response.status === 400) {
+                response.text().then((value) => console.warn("Error message: " + value));
+                return;
+            }
+            usersTableId.find('#userRow\\[' + id + '\\]').remove();
+            console.info("User with id = " + id + " was deleted");
+        });
+}
+
+$(document).ready(
+    () => {
+        getAllUsers();
+        initNavigation();
+    }
+);
+
