@@ -46,11 +46,14 @@ public class AdminController {
     }
 
     @ResponseBody
-    @GetMapping("/all")
+    @GetMapping("/users")
     public ResponseEntity<List<User>> findAll() {
         return new ResponseEntity<>(adminService.getUsers(), HttpStatus.OK);
     }
-
+    @GetMapping(value = "/roles")
+    public ResponseEntity<Iterable<Role>> findAllRoles() {
+        return ResponseEntity.ok(adminService.findAllRoles());
+    }
 
     @PostMapping(value = "/create")
     @ResponseBody
