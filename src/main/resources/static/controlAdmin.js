@@ -26,13 +26,16 @@ function loadUsersTable() {
     getAllUsers();
 }
 
+// Инициируем блок навигации - Админ / Пользователь
 function initNavigation() {
+// При нажатии на Админа - делаем активным содержимое его страницы, а содержимое пользователя отключаем
     $('#admin-page-button').click(() => {
         $('#admin-page-button').addClass('active').removeClass('btn-light').addClass('btn-primary').prop('aria-selected', true);
         $('#admin').addClass('active');
         $('#user-page-button').removeClass('active').removeClass('btn-primary').addClass('btn-light').prop('aria-selected', false);
         $('#user').removeClass('active');
     });
+// При нажатии на пользователя - делаем активным содержимое его страницы, а содержимое Админа отключаем
     $('#user-page-button').click(() => {
         $('#user-page-button').addClass('active').removeClass('btn-light').addClass('btn-primary').prop('aria-selected', true);
         $('#user').addClass('active');
@@ -68,8 +71,8 @@ function getAllUsers() {
                     // Передаем в функцию наш промис
                     .then(users => {
                         // Очищаем содержимое таблицы
-                        // Заполняем таблицу, передавая в метод _appendUserRow пользователя
                         usersTableId.empty();
+                        // Заполняем таблицу, передавая в метод _appendUserRow пользователя
                         users.forEach(user => {
                             _appendUserRow(user);
                         });
@@ -121,6 +124,7 @@ function _eraseUserModalForm() {
     userFormId.find('#age').removeClass('is-invalid');
 }
 
+// Функция устанавливает свойства для чтения / записи
 function _setReadonlyAttr(value = true) {
     userFormId.find('#firstName').prop('readonly', value);
     userFormId.find('#lastName').prop('readonly', value);
@@ -234,6 +238,7 @@ function loadUserAndShowModalForm(id, editMode = true) {
                         userFormId.find('.submit').text('Edit').removeClass('btn-danger').addClass('btn-primary')
                             .removeAttr('onClick')
                             .attr('onClick', 'updateUser(' + id + ');');
+                        // Статус для редактирования / чтения
                         _setReadonlyAttr(false);
 
                         // Иначе, в метод был передан false, метод ведет себя под Delete
@@ -246,6 +251,7 @@ function loadUserAndShowModalForm(id, editMode = true) {
                         userFormId.find('.submit').text('Delete').removeClass('btn-primary').addClass('btn-danger')
                             .removeAttr('onClick')
                             .attr('onClick', 'deleteUser(' + id + ');');
+                        // Статус для редактирования / чтения
                         _setReadonlyAttr();
                     }
 
@@ -276,6 +282,7 @@ function loadUserAndShowModalForm(id, editMode = true) {
         });
 }
 
+// Функция очищает аттрибуты невалидных полей
 function _eraseUserAddForm() {
     userAddFormId.find('.invalid-feedback').remove();
     userAddFormId.find('#firstNameAdd').removeClass('is-invalid');
@@ -308,11 +315,15 @@ function loadUserForInsertForm() {
     });
 }
 
+// Отправляем запрос на сервер, для сохранения пользователя
 function insertUser() {
+// Вызываем функцию по очистке невалидных полей
     _eraseUserAddForm();
 
+// Определяем тип запроса
     let headers = new Headers();
     headers.append('Content-Type', 'application/json; charset=utf-8');
+// Считываем поля и создаем объект user
     let user = {
         'firstName': userAddFormId.find('#firstNameAdd').val(),
         'lastName': userAddFormId.find('#lastNameAdd').val(),
@@ -321,33 +332,36 @@ function insertUser() {
         'password': userAddFormId.find('#passwordAdd').val(),
         'roles': userAddFormId.find('#roleSelectAdd').val().map(roleId => parseInt(roleId))
     };
+// Создаем объект запроса, по данному URL сохраняем объект
     let request = new Request('admin/create/', {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(user)
     });
 
+// Отправляем запрос на адрес
     fetch(request)
+        // Получаем ответ
         .then(function (response) {
             response.json().then(function (userData) {
                 console.log(userData);
 
-                if (response.status === 409) {
-                    userData.fieldErrors.forEach(error => {
-                        userAddFormId.find('#new' + error.field)
-                            .addClass('is-invalid')
-                            .parent().append($('<div class="invalid-feedback">').text(error.defaultMessage));
-                    });
-                    console.warn('Error: ' + userData.message);
-                    return false;
-                }
-                if (response.status === 400) {
-                    userAddFormId.find('#newemail')
-                        .addClass('is-invalid')
-                        .parent().append($('<div class="invalid-feedback">').text('E-mail must be unique'));
-                    console.warn("Error message: " + userData.message);
-                    return false;
-                }
+                // if (response.status === 409) {
+                //     userData.fieldErrors.forEach(error => {
+                //         userAddFormId.find('#new' + error.field)
+                //             .addClass('is-invalid')
+                //             .parent().append($('<div class="invalid-feedback">').text(error.defaultMessage));
+                //     });
+                //     console.warn('Error: ' + userData.message);
+                //     return false;
+                // }
+                // if (response.status === 400) {
+                //     userAddFormId.find('#newemail')
+                //         .addClass('is-invalid')
+                //         .parent().append($('<div class="invalid-feedback">').text('E-mail must be unique'));
+                //     console.warn("Error message: " + userData.message);
+                //     return false;
+                // }
 
                 loadUsersTable();
                 console.info("User with id = " + userData.id + " was inserted");

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
@@ -16,9 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@org.springframework.web.bind.annotation.RestController
 @RequestMapping(value = "/admin")
-public class AdminController {
+public class RestController {
 
 
     private final AdminService adminService;
@@ -27,25 +26,19 @@ public class AdminController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AdminController(AdminService adminService, RoleRepository roleRepository, RegistrationService registrationService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public RestController(AdminService adminService, RoleRepository roleRepository, RegistrationService registrationService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.adminService = adminService;
         this.roleRepository = roleRepository;
         this.registrationService = registrationService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @GetMapping
-    public String adminPage() {
-        return "admin/AdminPage";
-    }
 
-    @ResponseBody
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(adminService.getUser(id), HttpStatus.OK);
     }
 
-    @ResponseBody
     @GetMapping("/users")
     public ResponseEntity<List<User>> findAll() {
         return new ResponseEntity<>(adminService.getUsers(), HttpStatus.OK);
@@ -56,7 +49,6 @@ public class AdminController {
     }
 
     @PostMapping(value = "/create")
-    @ResponseBody
     public ResponseEntity<HttpStatus> add(@RequestBody User user) {
         Set<Role> rolesSet = new HashSet<>();
         for (Role role : user.getRoles()) {
@@ -69,7 +61,6 @@ public class AdminController {
     }
 
     @PatchMapping(value = "/{id}")
-    @ResponseBody
     public ResponseEntity<HttpStatus> updateUser(@PathVariable("id") Long id,
                                                  @RequestBody User user) {
         User userDb = null;
@@ -91,7 +82,6 @@ public class AdminController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
         adminService.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);

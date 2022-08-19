@@ -35,9 +35,6 @@ public class WebSecurityConfig {
 
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -49,7 +46,7 @@ public class WebSecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login")
                 .permitAll();
         return http.build();
     }

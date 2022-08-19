@@ -1,78 +1,200 @@
-function loadUsersTable() {
-// Добавляем аттрибут к кнопке "таблица" и содержимое таблицы - Активный
-    $('#nav-table-tab').addClass('active');
-    $('#nav-usersTable').addClass('show').addClass('active');
-// Удаляем аттрибут Активный у кнопки "Новый пользователь" и отключаем содержимое
-    $('#nav-newUser-tab').removeClass('active');
-    $('#nav-newUser').removeClass('show').removeClass('active');
-// Грузим содержимое таблицы
-    getAllUsers;
+const modalEdit = bootstrap.Modal.getOrCreateInstance(document.getElementById("editModal"));
+const modalDelete = bootstrap.Modal.getOrCreateInstance(document.getElementById("deleteModal"));
+
+const createLine = (el) =>{
+    return `<tr>
+                <td>${el.id}</td>
+                <td>${el.name}</td>  
+                <td>${el.secondName}</td>  
+                <td>${el.age}</td>  
+                <td>${el.mail}</td>  
+                <td>${el.rolesString}</td>
+                <td>
+                    <button type="button" class="editBut btn btn-primary btn-lg" data-toggle="modal"
+                        data-target="#editModal">
+                            Edit
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="delBut btn btn-danger btn-lg" data-toggle="modal"
+                    data-target="#deleteModal">
+                    Delete
+                    </button>
+                </td>
+            </tr>`;
 }
 
-// Функция загрузки содержимого таблицы
-const getAllUsers =
-// Отправляем запрос на адрес "/admin/all", не добавляя к запросу опций, по факту обычный метод GET
-    fetch("http://localhost:8080/admin/all")
-        .then(response => response.json())
-        .then(users => {
-            usersTableId.empty();
-            users.forEach(user => _appendUserRow(user))
+const renderPost = (data) =>{
+    let temp = "";
+    data.forEach((el)=>{
+        temp += createLine(el);
+    })
+    document.getElementById("tableBody").innerHTML += temp;
+}
+
+fetch("http://localhost:8082/api/users")
+    .then(res=>res.json())
+    .then(data=> renderPost(data));
+
+document.getElementById("formAdd").addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    let role = [];
+
+    let elem = document.getElementById("roleSelect");
+    for (let i = 0; i < elem.options.length; i++) {
+        if (elem.options[i].selected)
+            role.push(elem.options[i].text);
+        elem.options[i].selected = false;
+    }
+
+    let user = {
+        id : 0,
+        name: document.getElementById("name").value,
+        secondName: document.getElementById("secondName").value,
+        age: document.getElementById("age").value,
+        password: document.getElementById("password").value,
+        mail: document.getElementById("mail").value,
+        roles : role
+    }
+
+    document.getElementById("name").value = "";
+    document.getElementById("secondName").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("mail").value = "";
+
+    let response = fetch("http://localhost:8082/api/users", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    })
+        .then(res=>res.json())
+        .then(data => {
+            const dataArr = [];
+            dataArr.push(data);
+            renderPost(dataArr);
         });
-// Браузер сразу же начинает запрос и возвращает промис,
-// который внешний код использует для получения результата.
-// .then(function (response) {
-// Проверка на успешность запроса
-// if (response.ok) {
-//     // .json() анализирует ответ и возвращает новый промис
-//     // метод возвращает обязательство при благоприятном исходе вернуть объект, который получен после JSON.parse(текст тела ответа).
-//     response.json()
-//         // Передаем в функцию наш промис
-//         .then(users => {
-//         // Очищаем содержимое таблицы
-//         usersTableId.empty();
-//         // Заполняем таблицу, передавая в метод _appendUserRow пользователя
-//         users.forEach(user => {
-//             _appendUserRow(user);
-//         });
-//     });
-//     // В случае ошибки передаем в консоль сообщение с ошибкой
-// } else {
-//     console.error('Network request for users.json failed with response ' + response.status + ': ' + response.statusText);
-// }
-//     });
 
+})
 
-function _appendUserRow(user) {
-    // usersTableId
-    //     // Добавляем содержимое строк таблицы
-    //     .append($('<tr class="border-top bg-light">').attr('id', 'userRow[' + user.id + ']')
-    //         // Добавляем id
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][id]').text(user.id))
-    //         // Добавляем firstName
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][firstName]').text(user.firstName))
-    //         // Добавляем lastName
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][lastName]').text(user.lastName))
-    //         // Добавляем age
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][age]').text(user.age))
-    //         // Добавляем email
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][email]').text(user.email))
-    //         // Добавляем roles
-    //         .append($('<td>').attr('id', 'userData[' + user.id + '][roles]').text(user.roles.map(role => role.name)))
-    //         // Добавляем button Edit
-    //         .append($('<td>').append($('<button type="button" class="editBut btn btn-primary btn-lg" ' +
-    //             'data-toggle="modal" data-target="#adminEditModal">')
-    //             // При нажатии кнопки грузим Модальное окно по редактированию пользователя
-    //             // .click(() => {
-    //             //     loadUserAndShowModalForm(user.id);})
-    //             .text('Edit')))
-    //         // Добавляем button Delete
-    //         .append($('<td>').append($('<button type="button" class="delBut btn btn-danger btn-lg" ' +
-    //             'data-toggle="modal" data-target="#adminDeleteModal">')
-    //             // При нажатии кнопки грузим Модальное окно по удалению пользователя
-    //             // .click(() => {
-    //             //     loadUserAndShowModalForm(user.id, false);})
-    //             .text('Delete')))
-    //     );
+const on =(element, event, selector, handler) => {
+    element.addEventListener(event, (e) =>{
+        if(e.target.closest(selector)){
+            handler(e)
+        }
+    })
 }
 
-loadUsersTable();
+on(document, 'click', '.editBut', (e) =>{
+    const p = e.target.parentNode.parentNode;
+    document.getElementById("idEdit").value = p.children[0].innerHTML;
+    document.getElementById("firstNameEdit").value = p.children[1].innerHTML;
+    document.getElementById("lastNameEdit").value = p.children[2].innerHTML;
+    document.getElementById("ageEdit").value = p.children[3].innerHTML;
+    document.getElementById("emailEdit").value = p.children[4].innerHTML;
+    modalEdit.show();
+})
+
+on(document, 'click', '.delBut', (e) =>{
+    const p = e.target.parentNode.parentNode;
+    document.getElementById("idDelete").value = p.children[0].innerHTML;
+    document.getElementById("firstNameDelete").value = p.children[1].innerHTML;
+    document.getElementById("lastNameDelete").value = p.children[2].innerHTML;
+    document.getElementById("ageDelete").value = p.children[3].innerHTML;
+    document.getElementById("emailDelete").value = p.children[4].innerHTML;
+    modalDelete.show();
+})
+
+
+
+document.getElementById("formEdit").addEventListener('submit', (e) => {
+    e.preventDefault();
+    let role = [];
+    let elem = document.getElementById("roleEdit");
+    for (let i = 0; i < elem.options.length; i++) {
+        if (elem.options[i].selected)
+            role.push(elem.options[i].text);
+        elem.options[i].selected = false;
+    }
+
+    const idEl = document.getElementById("idEdit").value;
+    const nameEl = document.getElementById("firstNameEdit");
+    const secondNameEl = document.getElementById("lastNameEdit");
+    const ageEl = document.getElementById("ageEdit");
+    const passwordEl = document.getElementById("passwordEdit");
+    const mailEl = document.getElementById("emailEdit");
+
+    let user = {
+        id : idEl,
+        name: nameEl.value,
+        secondName: secondNameEl.value,
+        age: ageEl.value,
+        password: passwordEl.value,
+        mail: mailEl.value,
+        roles : role
+    }
+
+
+    nameEl.value = "";
+    secondNameEl.value = "";
+    ageEl.value = "";
+    passwordEl.value = "";
+    mailEl.value = "";
+
+    fetch('http://localhost:8082/api/users/', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    })
+        .then(res=>res.json())
+        .then(data => {
+            const table = document.getElementById("tableBody");
+            for(let i = 0 ; i < table.children.length; i++){
+                if(table.children[i].firstElementChild.innerHTML == idEl){
+                    table.children[i].innerHTML = createLine(data);
+                    break;
+                }
+            }
+
+        });
+    modalEdit.hide();
+})
+
+document.getElementById("adminFormDelete").addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nameEl = document.getElementById("firstNameDelete");
+    const secondNameEl = document.getElementById("lastNameDelete");
+    const ageEl = document.getElementById("ageDelete");
+    const mailEl = document.getElementById("emailDelete");
+    const id = document.getElementById("idDelete").value;
+    nameEl.value = "";
+    secondNameEl.value = "";
+    ageEl.value = "";
+    mailEl.value = "";
+
+    fetch('http://localhost:8082/api/users/' + id, {
+        method: 'DELETE'
+    })
+        .then(res=>res.json())
+        .then(data => {
+            const table = document.getElementById("tableBody");
+            for(let i = 0 ; i < table.children.length; i++){
+                if(table.children[i].firstElementChild.innerHTML == id){
+                    table.children[i].remove();
+                    break;
+                }
+            }
+
+        });
+    modalDelete.hide();
+})
+
+
+
+
+

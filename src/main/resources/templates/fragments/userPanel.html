@@ -17,6 +17,19 @@
       </tr>
       </thead>
       <tbody id="userTableBody">
+      <tr>
+
+        <td><a th:text="${user.getId()}">Id</a></td>
+        <td><a th:text="${user.getFirstName()}">Firstname</a></td>
+        <td><a th:text="${user.getLastName()}">Lastname</a></td>
+        <td><a th:text="${user.getAge()}">Age</a></td>
+        <td><a th:text="${user.getEmail()}">E-mail</a></td>
+        <td>
+          <div th:each="role : ${user.getRoles()}">
+            <a th:text="${role.getName()}">Role</a>
+          </div>
+        </td>
+      </tr>
       </tbody>
     </table>
   </div>

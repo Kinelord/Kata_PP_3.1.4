@@ -8,6 +8,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -45,5 +46,12 @@ public class User {
         this.password = password;
         this.age = age;
         this.email = email;
+    }
+    public boolean hasRole(String roleName) {
+        if (null == roles || 0 == roles.size()) {
+            return false;
+        }
+        Optional<Role> findRole = roles.stream().filter(role -> roleName.equals(role.getName())).findFirst();
+        return findRole.isPresent();
     }
 }
