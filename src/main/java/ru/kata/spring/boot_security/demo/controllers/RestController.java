@@ -52,7 +52,7 @@ public class RestController {
     public ResponseEntity<HttpStatus> add(@RequestBody User user) {
         Set<Role> rolesSet = new HashSet<>();
         for (Role role : user.getRoles()) {
-            rolesSet.add(roleRepository.findByName(role.getName()).get());
+            rolesSet.add(roleRepository.findById((Long) role.getId()).get());
         }
         user.setRoles(rolesSet);
 
@@ -60,7 +60,7 @@ public class RestController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<HttpStatus> updateUser(@PathVariable("id") Long id,
                                                  @RequestBody User user) {
         User userDb = null;
