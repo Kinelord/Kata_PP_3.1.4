@@ -60,7 +60,7 @@ public class RestController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<HttpStatus> updateUser(@PathVariable("id") Long id,
                                                  @RequestBody User user) {
         User userDb = null;

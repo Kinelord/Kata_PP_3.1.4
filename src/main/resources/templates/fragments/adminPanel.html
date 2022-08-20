@@ -3,30 +3,27 @@
     <!-- Определение количество блоков навигации и их свойства -->
     <nav class="nav nav-tabs" id="nav-tab" role="tablist">
         <!-- Первая ссылка навигации на таблицу пользователей -->
-        <a class="nav-link active" id="nav-tableUsers-tab" data-bs-toggle="tab" href="#nav-usersTable"
-           role="tab"
-           aria-controls="nav-usersTable" aria-selected="true">Users table</a>
+        <a class="nav-link active" id="nav-tableUsers-tab" data-toggle="tab" href="#nav-usersTable"
+           role="tab" aria-controls="nav-usersTable">Users table</a>
 
         <!-- Вторая ссылка навигации на создание пользователя -->
-        <a class="nav-link" id="nav-newUser-tab" data-bs-toggle="tab" href="#nav-newUser" role="tab"
-           aria-controls="nav-newUser" aria-selected="false">New User</a>
+        <a class="nav-link" id="nav-newUser-tab" data-toggle="tab" href="#nav-newUser"
+           role="tab" aria-controls="nav-newUser">New User</a>
     </nav>
 
     <!-- Блок описывающий содержимое вкладок навигации -->
     <div class="tab-content" id="nav-tabContent">
 
         <!-- Блок описывающий содержимое вкладки таблицы пользователей -->
-        <div class="tab-pane fade show active" id="nav-usersTable" role="tabpanel"
-             aria-labelledby="nav-tableUsers-tab">
+        <div class="tab-pane fade show active" id="nav-usersTable" role="tabpanel">
 
             <div th:replace="fragments/tableUsers"/>
         </div>
 
 
         <!-- Блок описывающий содержимое вкладки создание нового пользователя -->
-        <div class="tab-pane fade" id="nav-newUser" role="tabpanel"
-             aria-labelledby="nav-newUser-tab">
-            <div th:replace="fragments/newUser"/>
+        <div class="tab-pane fade" id="nav-newUser" role="tabpanel">
+            <div th:replace="fragments/createUser"/>
         </div>
     </div>
 

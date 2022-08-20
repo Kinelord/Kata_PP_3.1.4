@@ -1,5 +1,5 @@
 <!-- Рамка с названием -->
-<div th:fragment="newUser">
+<div th:fragment="createUser">
     <div class="card ">
         <div class="card-header">
             <div><h4><b>Add new users</b></h4></div>
@@ -7,33 +7,33 @@
         <div class="card-body">
             <div class="row justify-content-sm-center text-center">
                 <div class="col-2 col-sm-3 themed-grid-col">
-                    <form id="formAddUser">
+                    <form role="form" id="formCreateUser" onsubmit="return false;">
 
                         <label for="firstNameAdd"><b>First name</b></label>
                         <input class="form-control alert alert-warning " type="text"
-                               id="firstNameAdd"
+                               id="firstNameAdd" name="firstName"
                                placeholder="Enter your firstname"/>
 
                         <label for="lastNameAdd"><b>Last name</b></label>
                         <input class="form-control alert alert-warning" type="text"
-                               id="lastNameAdd"
+                               id="lastNameAdd" name="lastName"
                                placeholder="Enter your lastName"/>
 
                         <label for="ageAdd"><b><b>Age</b></b></label>
-                        <input class="form-control" type="number" id="ageAdd"
+                        <input class="form-control" type="number" id="ageAdd" name="age"
                                placeholder="Enter your age"/>
                         <br/>
                         <label for="emailAdd"><b>Email</b></label>
                         <input class="form-control alert alert-warning" type="text"
-                               id="emailAdd"
+                               id="emailAdd" name="email"
                                placeholder="Enter your email"/>
 
                         <label for="passwordAdd"><b>Password</b></label>
-                        <input class="form-control" type="text" id="passwordAdd"
+                        <input class="form-control" type="text" id="passwordAdd" name="password"
                                placeholder="Enter your password"/>
 
                         <label for="roleSelectAdd">Role</label>
-                        <select multiple class="form-control" id="roleSelectAdd" name="role">
+                        <select multiple class="form-control" id="roleSelectAdd" name="roles[]">
                             <option value="ADMIN">ADMIN</option>
                             <option value="USER">USER</option>
                         </select>
