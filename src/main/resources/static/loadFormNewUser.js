@@ -26,7 +26,7 @@ function newUserRegistrationPage() {
 
 
 // Отправляем запрос на сервер, для сохранения пользователя
-function insertUser() {
+function createUser() {
 
 // Определяем тип запроса
     let headers = new Headers();
@@ -57,6 +57,7 @@ function insertUser() {
             response.json().then(function (userData) {
                 // После отработанного запроса грузим страницу "Таблица пользователей"
                 loadUsersTable();
+                console.log("create user" + userData);
             });
         });
 }

@@ -41,9 +41,9 @@ function loadUsersTable() {
     getAllUsers();
 }
 
-// При нажатии на странице "Добавить нового пользователя" кнопки, запускаем метод insertUser
+// При нажатии на странице "Добавить нового пользователя" кнопки, запускаем метод createUser
 $formCreateUser.find(':submit').click(() => {
-    insertUser();
+    createUser();
 });
 
 

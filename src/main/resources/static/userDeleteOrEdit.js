@@ -71,7 +71,7 @@ function loadUserAndShowModalForm(id, editMode = true) {
 
                     });
 
-                    // вызов метода из Bootstrap
+                    // вызов updateUser или deleteUser в зависимости от вызванного модального окна
                     $modalEditOrDelete.modal();
 
                 });
@@ -82,11 +82,15 @@ function loadUserAndShowModalForm(id, editMode = true) {
         });
 }
 
+// функция отправляет запрос на корректировку пользователя
 function updateUser(id) {
 
+// Определяем тип запроса и его свойства
     let headers = new Headers();
     headers.append('Content-Type', 'application/json; charset=utf-8');
+// Считываем поля и создаем объект user
     let user = {
+        // find - ищет соответствие с firstName и считывает значение поля, устанавливая его для ключа
         'id': parseInt($modalEditOrDelete.find('#id').val()),
         'firstName': $modalEditOrDelete.find('#firstName').val(),
         'lastName': $modalEditOrDelete.find('#lastName').val(),
@@ -95,12 +99,16 @@ function updateUser(id) {
         'password': $modalEditOrDelete.find('#password').val(),
         'roles': $modalEditOrDelete.find('#roles').val().map(roleId => parseInt(roleId))
     };
+// Создаем объект запроса, по данному URL сохраняем объект
     let request = new Request('/admin/' + id, {
+// Устанавливаем тип и свойства запроса
         method: 'PATCH',
         headers: headers,
+// Преобразуем объект user в строковое представление
         body: JSON.stringify(user)
     });
 
+// Отправляем запрос на адрес
     fetch(request)
         .then(function (response) {
             if (response.status === 404) {
