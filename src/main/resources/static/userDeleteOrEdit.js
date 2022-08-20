@@ -1,8 +1,5 @@
-
 // Модальное окно по редактированию или удалению пользователя
 function loadUserAndShowModalForm(id, editMode = true) {
-// Вызываем метод, убирающий информацию о невалидных полях
-    clearFieldModalForm();
 
     // Отправляем запрос на сервер, для получения полей пользователя выбранного на редактирование
     fetch('/admin/' + id, {method: 'GET'})
@@ -61,26 +58,22 @@ function loadUserAndShowModalForm(id, editMode = true) {
 
                     // Отправляем запрос на сервер, для получения Ролей
                     fetch('/admin/roles').then(function (response) {
-                        if (response.ok) {
-                            $modalEditOrDelete.find('#roles').empty();
-                            response.json().then(roleList => {
-                                roleList.forEach(role => {
-                                    $modalEditOrDelete.find('#roles')
-                                        .append($('<option>')
-                                            .prop('selected', user.roles.filter(e => e.id === role.id).length)
-                                            .val(role.id).text(role.name));
-                                });
+
+                        $modalEditOrDelete.find('#roles').empty();
+                        response.json().then(roleList => {
+                            roleList.forEach(role => {
+                                $modalEditOrDelete.find('#roles')
+                                    .append($('<option>')
+                                        .prop('selected', user.roles.filter(e => e.id === role.id).length)
+                                        .val(role.id).text(role.name));
                             });
-                        } else {
-                            console.error('Network request for roles.json failed with response ' + response.status + ': ' + response.statusText);
-                        }
+                        });
+
                     });
 
                     // вызов метода из Bootstrap
                     $modalEditOrDelete.modal();
-                    // $modalFormEdit.find(':submit').click(() => {
-                    //     updateUser(id);
-                    // });
+
                 });
             }
         )
@@ -90,7 +83,6 @@ function loadUserAndShowModalForm(id, editMode = true) {
 }
 
 function updateUser(id) {
-    clearFieldModalForm();
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json; charset=utf-8');
@@ -118,25 +110,6 @@ function updateUser(id) {
             }
 
             response.json().then(function (userData) {
-                console.log(userData);
-
-                if (response.status === 409) {
-                    userData.fieldErrors.forEach(error => {
-                        $modalEditOrDelete.find('#' + error.field)
-                            .addClass('is-invalid')
-                            .parent().append($('<div class="invalid-feedback">').text(error.defaultMessage));
-                    });
-                    console.warn('Error: ' + userData.message);
-                    return false;
-                }
-                if (response.status === 400) {
-                    $modalEditOrDelete.find('#email')
-                        .addClass('is-invalid')
-                        .parent().append($('<div class="invalid-feedback">').text('E-mail must be unique'));
-                    console.warn("Error message: " + userData.message);
-                    return false;
-                }
-
                 $('#userData\\[' + userData.id + '\\]\\[firstName\\]').text(userData.firstName)
                 $('#userData\\[' + userData.id + '\\]\\[lastName\\]').text(userData.lastName)
                 $('#userData\\[' + userData.id + '\\]\\[age\\]').text(userData.age)
@@ -144,7 +117,6 @@ function updateUser(id) {
                 $('#userData\\[' + userData.id + '\\]\\[roles\\]').text(userData.role);
                 $modalEditOrDelete.modal('hide');
                 loadUsersTable()
-                console.info("User with id = " + id + " was updated");
             });
         })
         .catch(function (err) {
@@ -163,17 +135,6 @@ function deleteUser(id) {
             $usersTableId.find('#userRow\\[' + id + '\\]').remove();
             console.info("User with id = " + id + " was deleted");
         });
-}
-
-// Функция удаляющая классы и блоки невалидного отображения в модальном окне
-function clearFieldModalForm() {
-// Функция find производит поиск в $userFormId и удаляет информацию о невалидных полях в модальном окне
-    $modalEditOrDelete.find('.invalid-feedback').remove();
-    $modalEditOrDelete.find('#firstNameAdd').removeClass('is-invalid');
-    $modalEditOrDelete.find('#lastNameAdd').removeClass('is-invalid');
-    $modalEditOrDelete.find('#emailAdd').removeClass('is-invalid');
-    $modalEditOrDelete.find('#passwordAdd').removeClass('is-invalid');
-    $modalEditOrDelete.find('#ageAdd').removeClass('is-invalid');
 }
 
 // Функция устанавливает свойства полей для чтения / записи в модальном окне

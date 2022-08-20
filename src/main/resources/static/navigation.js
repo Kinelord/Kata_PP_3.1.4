@@ -59,7 +59,6 @@ function loadAddForm() {
     newUserRegistrationPage();
 }
 
-
 $(document).ready(
     () => {
         getAllUsers();
