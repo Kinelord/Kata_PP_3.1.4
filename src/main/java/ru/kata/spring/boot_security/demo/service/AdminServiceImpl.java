@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
@@ -22,10 +23,13 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public AdminServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -45,6 +49,20 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void updateUser(Long id, User user) {
+        User userDb = null;
+        if(user.getRoles().size() == 0 || user.getPassword().equals("")) {
+            userDb = getUser(id);
+        }
+        if (user.getRoles().size() == 0) {
+            user.setRoles(userDb.getRoles());
+        }
+
+
+        if (user.getPassword().equals("")) {
+            user.setPassword(userDb.getPassword());
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 

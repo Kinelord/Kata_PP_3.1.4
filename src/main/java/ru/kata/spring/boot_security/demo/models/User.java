@@ -1,9 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -14,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -53,5 +51,14 @@ public class User {
         }
         Optional<Role> findRole = roles.stream().filter(role -> roleName.equals(role.getName())).findFirst();
         return findRole.isPresent();
+    }
+
+    public User(String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
     }
 }

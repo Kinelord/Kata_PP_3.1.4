@@ -61,10 +61,4 @@ public class WebSecurityConfig {
     void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
     }
-
-    @Bean
-    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }

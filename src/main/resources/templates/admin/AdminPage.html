@@ -4,6 +4,7 @@
 
 
 <head th:replace="globalBlock/basicInformation :: head"/>
+<title>Admin panel</title>
 
 <body>
 <div th:replace="globalBlock/basicInformation :: Start"/>
@@ -13,9 +14,6 @@
 
 <!-- Левая навигация между админом и юзером -->
 <div th:replace="fragments/navigationUserAdmin :: navigationUserAdmin"/>
-
-
-<div th:replace="fragments/user-info"/>
 
 <div th:replace="globalBlock/basicInformation :: finalAdmin"/>
 <div th:replace="globalBlock/basicInformation :: final"/>
